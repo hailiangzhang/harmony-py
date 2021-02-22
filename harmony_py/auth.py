@@ -7,7 +7,7 @@ from requests import Session
 from requests.models import PreparedRequest, Response
 from requests.utils import get_netrc_auth
 from requests_futures.sessions import FuturesSession
-from typing import cast, Optional
+from typing import cast, Optional, Tuple
 
 from .config import Config
 
@@ -128,8 +128,14 @@ def _authenticate(username: Optional[str] = None, password: Optional[str] = None
             raise MissingCredentials('Authentication: No credentials found.')
 
 
-def authenticate(username: Optional[str] = None, password: Optional[str] = None,
-                 netrc_file: Optional[bool] = False,
+@dataclass
+class Credentials:
+    username: str
+    password: str
+
+
+def authenticate(*, auth=Tuple[str, str] | Credentials,
+                 token=Optional[str],
                  verify: Optional[bool] = True) -> Session:
     """
     Create a requests-futures session for authenticated HTTP calls after optionally verifying
@@ -174,3 +180,25 @@ def authenticate(username: Optional[str] = None, password: Optional[str] = None,
         else:
             raise BadAuthentication('Authentication: An unknown error occurred during credential '
                                     f'verification: HTTP {result.status_code}')
+
+
+if __name__ == '__main__':
+
+    # note: to run, you may want to create a soft link to the library for now: `ln -s ../harmony_py/ harmony_py`
+    # note: the keyword argument `verify` defaults to True, meaning it will verify the credentials are valid during session instantiation.
+
+    # from harmony_py.auth import authenticate
+
+    # specify both username and password
+
+    # specify just a username, in which case prompt the user for their password
+
+    # or look for .netrc credentials
+
+    # Someday, this will work:
+    # client = Client(auth=authenticate())
+
+    # Now
+    session = authenticate(auth=(username, password))
+    session = authenticate(token='ABCD1234')
+    session = authenticate()                   # Use EDL_* or .netrc
