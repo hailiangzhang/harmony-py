@@ -16,6 +16,7 @@ import os
 import shutil
 import sys
 import time
+import platform
 from concurrent.futures import Future, ThreadPoolExecutor
 from contextlib import contextmanager
 from datetime import datetime
@@ -463,6 +464,8 @@ class Client:
             job_id = (response.json())['jobID']
         else:
             response.raise_for_status()
+
+        # Add user-agent headers
 
         return job_id
 
