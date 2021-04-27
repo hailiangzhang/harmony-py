@@ -362,6 +362,12 @@ class Client:
 
         return params
 
+    def _headers(self) -> dict:
+        """Create (if needed) and returns a dictionary of headers."""
+        if self.headers is None:
+            self.headers = {}
+        return self.headers
+
     def _spatial_subset_params(self, request: Request) -> list:
         """Creates a dictionary of spatial subset query parameters."""
         if request.spatial:
